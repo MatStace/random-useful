@@ -1,4 +1,4 @@
-Just a collection (yeah, ok, only one so far, shhh) of useful scripts that I want to keep hold of
+Just a collection ~(yeah, ok, only one so far, shhh)~ of useful scripts that I want to keep hold of
 
 ssl-check-days.sh
 tells you how many days left on an SSL cert for a host
