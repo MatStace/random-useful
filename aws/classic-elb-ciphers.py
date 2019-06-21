@@ -17,7 +17,7 @@ import re
 ec2 = boto3.client('ec2')
 regionlist = ec2.describe_regions()
 for region in regionlist["Regions"]:
-    print region.get("RegionName")
+    print '#',region.get("RegionName")
 
     session = boto3.Session(profile_name="default", region_name=region.get("RegionName"))
     elb = session.client("elb")
@@ -27,11 +27,11 @@ for region in regionlist["Regions"]:
     for instance in elbs["LoadBalancerDescriptions"]:
         for listener in instance["ListenerDescriptions"]:
             if (not filter(r.match,listener.get("PolicyNames"))) and listener.get("Listener").get("Protocol") == "HTTPS":
-                print "Probably using ye olde TLS policy?"
-                print instance["LoadBalancerName"] ,listener.get("Listener").get("LoadBalancerPort") , listener.get("PolicyNames")
+ #               print "Probably using ye olde TLS policy?"
+                print "#",instance["LoadBalancerName"] ,listener.get("Listener").get("LoadBalancerPort") , listener.get("PolicyNames")
                 newPolicyName = ("MatCreated-SSLNegotiationPolicy-{}-{}".format(instance["LoadBalancerName"],str(int(time.time()))))
-                print newPolicyName
+ #               print newPolicyName
                 print "aws elb create-load-balancer-policy --load-balancer-name ", instance["LoadBalancerName"] ," --policy-name ",newPolicyName ," --policy-type-name SSLNegotiationPolicyType --policy-attributes AttributeName=Reference-Security-Policy,AttributeValue=ELBSecurityPolicy-TLS-1-2-2017-01  --region ",region.get("RegionName")
                 print "aws elb set-load-balancer-policies-of-listener --load-balancer-name ", instance["LoadBalancerName"] ," --load-balancer-port ", listener.get("Listener").get("LoadBalancerPort") ," --policy-names ", newPolicyName, " --region ",region.get("RegionName")
-                print "********************************\n\n"
+ #               print "********************************\n\n"
 
